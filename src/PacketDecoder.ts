@@ -3,6 +3,7 @@ import { ParticipantVehicleNamesDecoder } from "./ParticipantVehicleNamesDecoder
 import { ParticipantsDecoder } from "./ParticipantsDecoder";
 import { RaceDefinitionDecoder } from "./RaceDefinitionDecoder";
 import { GameStateDecoder } from "./GameStateDecoder";
+import { CarPhysicsDecoder } from "./CarPhysicsDecoder";
 
 export interface PacketHeader {
   packetNumber: number;
@@ -26,7 +27,7 @@ export enum PacketType {
 }
 
 export type PacketDataTypes = {
-  [PacketType.CAR_PHYSICS]: never;
+  [PacketType.CAR_PHYSICS]: ReturnType<typeof CarPhysicsDecoder.decode>;
   [PacketType.RACE_DEFINITION]: ReturnType<typeof RaceDefinitionDecoder.decode>;
   [PacketType.PARTICIPANTS]: ReturnType<typeof ParticipantsDecoder.decode>;
   [PacketType.TIMINGS]: ReturnType<typeof TimingsDecoder.decode>;
@@ -88,6 +89,11 @@ export class PacketDecoder {
     const header = this.decodeHeader(buffer);
 
     switch (header.packetType) {
+      case PacketType.CAR_PHYSICS:
+        return {
+          header,
+          data: CarPhysicsDecoder.decode(buffer),
+        };
       case PacketType.TIMINGS:
         return {
           header,

@@ -51,6 +51,7 @@ class AMS2Client extends EventEmitter {
 }
 
 export default AMS2Client;
+export { CarPhysicsData } from "./CarPhysicsDecoder";
 export { GameStateData } from "./GameStateDecoder";
 export { PacketHeader, PacketType } from "./PacketDecoder";
 export {
