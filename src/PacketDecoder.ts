@@ -20,9 +20,9 @@ export enum PacketType {
   PARTICIPANTS = 2,
   TIMINGS = 3,
   GAME_STATE = 4,
-  WEATHER_STATE = 5,
-  VEHICLE_NAMES = 6,
-  TIME_STATS = 7,
+  // WEATHER_STATE = 5,
+  // VEHICLE_NAMES = 6,
+  // TIME_STATS = 7,
   PARTICIPANTS_VEHICLE_NAMES = 8,
 }
 
@@ -32,9 +32,9 @@ export type PacketDataTypes = {
   [PacketType.PARTICIPANTS]: ReturnType<typeof ParticipantsDecoder.decode>;
   [PacketType.TIMINGS]: ReturnType<typeof TimingsDecoder.decode>;
   [PacketType.GAME_STATE]: ReturnType<typeof GameStateDecoder.decode>;
-  [PacketType.WEATHER_STATE]: never;
-  [PacketType.VEHICLE_NAMES]: never;
-  [PacketType.TIME_STATS]: never;
+  // [PacketType.WEATHER_STATE]: never;
+  // [PacketType.VEHICLE_NAMES]: never;
+  // [PacketType.TIME_STATS]: never;
   [PacketType.PARTICIPANTS_VEHICLE_NAMES]: ReturnType<
     typeof ParticipantVehicleNamesDecoder.decode
   >;
@@ -68,12 +68,12 @@ export class PacketDecoder {
         return "TIMINGS";
       case PacketType.GAME_STATE:
         return "GAME_STATE";
-      case PacketType.WEATHER_STATE:
-        return "WEATHER_STATE";
-      case PacketType.VEHICLE_NAMES:
-        return "VEHICLE_NAMES";
-      case PacketType.TIME_STATS:
-        return "TIME_STATS";
+      // case PacketType.WEATHER_STATE:
+      //   return "WEATHER_STATE";
+      // case PacketType.VEHICLE_NAMES:
+      //   return "VEHICLE_NAMES";
+      // case PacketType.TIME_STATS:
+      //   return "TIME_STATS";
       case PacketType.PARTICIPANTS_VEHICLE_NAMES:
         return "PARTICIPANTS_VEHICLE_NAMES";
       default:

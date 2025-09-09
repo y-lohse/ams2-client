@@ -46,7 +46,7 @@ class AMS2Client extends EventEmitter {
     event: T,
     listener: (packet: PacketDataTypes[T], header: PacketHeader) => void,
   ) {
-    return super.on(event.toString(), listener);
+    return super.on(PacketType[event].toString(), listener);
   }
 }
 
