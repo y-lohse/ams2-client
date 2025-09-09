@@ -23,6 +23,7 @@ class AMS2Client extends EventEmitter {
           PacketType[header.packetType].toString(),
           decodedPacket.data,
           header,
+          msg,
         );
       } catch (error) {
         // Silently ignore decode errors
@@ -44,7 +45,11 @@ class AMS2Client extends EventEmitter {
 
   onPacket<T extends PacketType>(
     event: T,
-    listener: (packet: PacketDataTypes[T], header: PacketHeader) => void,
+    listener: (
+      packet: PacketDataTypes[T],
+      header: PacketHeader,
+      rawPacket: Buffer,
+    ) => void,
   ) {
     return super.on(PacketType[event].toString(), listener);
   }

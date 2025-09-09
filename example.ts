@@ -13,9 +13,12 @@ client.onPacket(PacketType.PARTICIPANTS, (packet) => {
   console.log("PARTICIPANTS", packet);
 });
 
-client.onPacket(PacketType.PARTICIPANTS_VEHICLE_NAMES, (packet) => {
-  console.log("PARTICIPANTS_VEHICLE_NAMES", packet);
-});
+client.onPacket(
+  PacketType.PARTICIPANTS_VEHICLE_NAMES,
+  (packet, header, raw) => {
+    console.log("PARTICIPANTS_VEHICLE_NAMES", packet, raw.toString("hex"));
+  },
+);
 
 client.start();
 console.log("Waiting for packets...");
