@@ -19,6 +19,11 @@ class AMS2Client extends EventEmitter {
         const decodedPacket = PacketDecoder.decodePacket(msg);
         const header = decodedPacket.header;
 
+        if (PacketType[header.packetType] === undefined) {
+          this.emit("UNKNOWN", decodedPacket.data, header, msg);
+          return;
+        }
+
         this.emit(
           PacketType[header.packetType].toString(),
           decodedPacket.data,
@@ -26,11 +31,12 @@ class AMS2Client extends EventEmitter {
           msg,
         );
       } catch (error) {
-        // Silently ignore decode errors
+        console.error("Failed to decode packet:", error, msg.toString("hex"));
       }
     });
 
     this.socket.on("error", (err) => {
+      console.error(`Socket error:\n${err.stack}`);
       this.socket.close();
     });
   }
@@ -53,16 +59,31 @@ class AMS2Client extends EventEmitter {
   ) {
     return super.on(PacketType[event].toString(), listener);
   }
+
+  onUnknownPacket(
+    listener: (packet: Buffer, header: PacketHeader, rawPacket: Buffer) => void,
+  ) {
+    return super.on("UNKNOWN", listener);
+  }
 }
 
 export default AMS2Client;
 export { CarPhysicsData } from "./CarPhysicsDecoder";
-export { GameStateData } from "./GameStateDecoder";
+export { GameState, GameStateData, SessionState } from "./GameStateDecoder";
 export { PacketHeader, PacketType } from "./PacketDecoder";
+export { ParticipantData, ParticipantsData } from "./ParticipantsDecoder";
 export {
+  ClassInfo,
   ParticipantVehicleNamesData,
   VehicleInfo,
 } from "./ParticipantVehicleNamesDecoder";
-export { ParticipantData, ParticipantsData } from "./ParticipantsDecoder";
 export { RaceDefinitionData } from "./RaceDefinitionDecoder";
-export { ParticipantInfo, TimingsData } from "./TimingsDecoder";
+export {
+  FlagColor,
+  FlagReason,
+  ParticipantInfo,
+  PitMode,
+  PitSchedule,
+  RaceState,
+  TimingsData,
+} from "./TimingsDecoder";
