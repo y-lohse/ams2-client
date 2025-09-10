@@ -4,6 +4,7 @@ import { ParticipantsDecoder } from "./ParticipantsDecoder";
 import { RaceDefinitionDecoder } from "./RaceDefinitionDecoder";
 import { GameStateDecoder } from "./GameStateDecoder";
 import { CarPhysicsDecoder } from "./CarPhysicsDecoder";
+import { TimeStatsDecoder } from "./TimeStatsDecoder";
 
 export interface PacketHeader {
   packetNumber: number;
@@ -22,7 +23,7 @@ export enum PacketType {
   GAME_STATE = 4,
   // WEATHER_STATE = 5,
   // VEHICLE_NAMES = 6,
-  // TIME_STATS = 7,
+  TIME_STATS = 7,
   PARTICIPANTS_VEHICLE_NAMES = 8,
 }
 
@@ -34,7 +35,7 @@ export type PacketDataTypes = {
   [PacketType.GAME_STATE]: ReturnType<typeof GameStateDecoder.decode>;
   // [PacketType.WEATHER_STATE]: never;
   // [PacketType.VEHICLE_NAMES]: never;
-  // [PacketType.TIME_STATS]: never;
+  [PacketType.TIME_STATS]: ReturnType<typeof TimeStatsDecoder.decode>;
   [PacketType.PARTICIPANTS_VEHICLE_NAMES]: ReturnType<
     typeof ParticipantVehicleNamesDecoder.decode
   >;
@@ -72,8 +73,8 @@ export class PacketDecoder {
       //   return "WEATHER_STATE";
       // case PacketType.VEHICLE_NAMES:
       //   return "VEHICLE_NAMES";
-      // case PacketType.TIME_STATS:
-      //   return "TIME_STATS";
+      case PacketType.TIME_STATS:
+        return "TIME_STATS";
       case PacketType.PARTICIPANTS_VEHICLE_NAMES:
         return "PARTICIPANTS_VEHICLE_NAMES";
       default:
@@ -113,6 +114,11 @@ export class PacketDecoder {
         return {
           header,
           data: GameStateDecoder.decode(buffer),
+        };
+      case PacketType.TIME_STATS:
+        return {
+          header,
+          data: TimeStatsDecoder.decode(buffer),
         };
       case PacketType.PARTICIPANTS_VEHICLE_NAMES:
         return {

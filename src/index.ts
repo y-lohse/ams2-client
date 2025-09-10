@@ -87,3 +87,4 @@ export {
   RaceState,
   TimingsData,
 } from "./TimingsDecoder";
+export { ParticipantStatsInfo, TimeStatsData } from "./TimeStatsDecoder";
