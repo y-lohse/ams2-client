@@ -26,13 +26,13 @@ A TypeScript client library for receiving and decoding UDP telemetry data from A
 ## Installation
 
 ```bash
-npm install
+npm install ams2-client
 ```
 
 ## Quick Start
 
 ```typescript
-import AMS2Client, { PacketType } from './src/index';
+import AMS2Client, { PacketType } from 'ams2-client';
 
 const client = new AMS2Client();
 
@@ -65,9 +65,10 @@ client.start();
 
 #### Event Callbacks
 
-All callbacks receive two parameters:
+All callbacks receive three parameters:
 - `packet` - Decoded packet data (type varies by packet type)
 - `header` - Packet header information
+- `rawBuffer` - Raw UDP packet buffer
 
 ### Packet Data Types
 
@@ -130,7 +131,6 @@ Vehicle information:
 ### Tire Arrays
 Tire data is provided as 4-element arrays representing [Front Left, Front Right, Rear Left, Rear Right]:
 
-
 ## Development
 
 ### Building
@@ -138,11 +138,6 @@ Tire data is provided as 4-element arrays representing [Front Left, Front Right,
 npm run build
 ```
 
-### Running Examples
-```bash
-npm run example
-```
-
 ## Credits
 
-[Based on the C++ implemention of leroythelegend](https://github.com/leroythelegend/rough_idea_project_cars).
+[Based on the C++ implemention of leroythelegend](https://github.com/leroythelegend/rough_idea_project_cars) and [this project from nabezokodaikon](https://github.com/nabezokodaikon/pcars2-telemetry-browsing).

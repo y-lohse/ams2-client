@@ -1,19 +1,40 @@
 {
   "name": "ams2-client",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "A TypeScript client library for receiving and decoding UDP telemetry data from Automobilista 2 (AMS2)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
-    "example": "ts-node example.ts"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
-  "author": "",
+  "keywords": [
+    "ams2",
+    "automobilista",
+    "telemetry",
+    "udp",
+    "racing",
+    "simulation",
+    "typescript"
+  ],
+  "author": "Yannick Lohse",
   "license": "MIT",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^24.3.1",
-    "esbuild": "0.25.9",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
 }
