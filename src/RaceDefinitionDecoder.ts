@@ -13,6 +13,9 @@ export interface RaceDefinitionData {
   translatedTrackLocation: string;
   translatedTrackVariation: string;
   lapsTimeInEvent: number;
+  isTimedSessions: boolean;
+  lapsInEvent: number;
+  sessionLengthTimeInEvent: number;
   enforcedPitstopLap: number;
 }
 
@@ -90,6 +93,12 @@ export class RaceDefinitionDecoder {
     const lapsTimeInEvent = buffer.readUInt16LE(offset);
     offset += 2;
 
+    const isTimedSessions = (lapsTimeInEvent & 0x8000) !== 0;
+    const lapsInEvent = isTimedSessions ? 0 : lapsTimeInEvent & 0x7fff;
+    const sessionLengthTimeInEvent = isTimedSessions
+      ? (lapsTimeInEvent & 0x7fff) * 5
+      : 0;
+
     const enforcedPitstopLap = buffer.readInt8(offset);
 
     return {
@@ -107,6 +116,9 @@ export class RaceDefinitionDecoder {
       translatedTrackLocation,
       translatedTrackVariation,
       lapsTimeInEvent,
+      isTimedSessions,
+      lapsInEvent,
+      sessionLengthTimeInEvent,
       enforcedPitstopLap,
     };
   }

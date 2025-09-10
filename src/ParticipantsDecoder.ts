@@ -18,38 +18,42 @@ export class ParticipantsDecoder {
 
     const participants: ParticipantData[] = [];
 
+    const names: string[] = [];
     for (let i = 0; i < 16; i++) {
-      const participant = this.decodeParticipant(buffer, offset);
-      participants.push(participant);
-      offset += 72;
+      const nameBuffer = buffer.subarray(offset, offset + 64);
+      const nullIndex = nameBuffer.indexOf(0);
+      const name = nameBuffer
+        .subarray(0, nullIndex >= 0 ? nullIndex : 64)
+        .toString("utf8");
+      names.push(name);
+      offset += 64;
+    }
+
+    const nationalities: number[] = [];
+    for (let i = 0; i < 16; i++) {
+      const nationality = buffer.readUInt32LE(offset);
+      nationalities.push(nationality);
+      offset += 4;
+    }
+
+    const indices: number[] = [];
+    for (let i = 0; i < 16; i++) {
+      const index = buffer.readUInt16LE(offset);
+      indices.push(index);
+      offset += 2;
+    }
+
+    for (let i = 0; i < 16; i++) {
+      participants.push({
+        name: names[i],
+        nationality: nationalities[i],
+        index: indices[i],
+      });
     }
 
     return {
       participantsChangedTimestamp,
       participants,
-    };
-  }
-
-  private static decodeParticipant(
-    buffer: Buffer,
-    offset: number,
-  ): ParticipantData {
-    const nameBuffer = buffer.subarray(offset, offset + 64);
-    const nullIndex = nameBuffer.indexOf(0);
-    const name = nameBuffer
-      .subarray(0, nullIndex >= 0 ? nullIndex : 64)
-      .toString("utf8");
-    offset += 64;
-
-    const nationality = buffer.readUInt32LE(offset);
-    offset += 4;
-
-    const index = buffer.readUInt16LE(offset);
-
-    return {
-      name,
-      nationality,
-      index,
     };
   }
 }

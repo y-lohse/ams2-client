@@ -31,7 +31,6 @@ export interface CarPhysicsData {
   localAcceleration: [number, number, number];
   worldAcceleration: [number, number, number];
   extentsCenter: [number, number, number];
-  fullPosition: [number, number, number];
   tireFlags: [number, number, number, number];
   terrain: [number, number, number, number];
   tireY: [number, number, number, number];
@@ -39,6 +38,9 @@ export interface CarPhysicsData {
   tireTemp: [number, number, number, number];
   tireHeightAboveGround: [number, number, number, number];
   tireWear: [number, number, number, number];
+  brakeDamage: [number, number, number, number];
+  suspensionDamage: [number, number, number, number];
+  brakeTempCelsius: [number, number, number, number];
   tireTreadTemp: [number, number, number, number];
   tireLayerTemp: [number, number, number, number];
   tireCarcassTemp: [number, number, number, number];
@@ -53,9 +55,6 @@ export interface CarPhysicsData {
   suspensionVelocity: [number, number, number, number];
   suspensionRideHeight: [number, number, number, number];
   airPressure: [number, number, number, number];
-  suspensionDamage: [number, number, number, number];
-  brakeTempCelsius: [number, number, number, number];
-  brakeDamage: [number, number, number, number];
   engineSpeed: number;
   engineTorque: number;
   wings: [number, number];
@@ -66,8 +65,8 @@ export interface CarPhysicsData {
   dPad: number;
   tireCompound: [string, string, string, string];
   turboBoostPressure: number;
+  fullPosition: [number, number, number];
   brakeBias: number;
-  tickCount: number;
 }
 
 export class CarPhysicsDecoder {
@@ -253,8 +252,28 @@ export class CarPhysicsDecoder {
     ];
     offset += 4;
 
+    const brakeDamage: [number, number, number, number] = [
+      buffer.readUInt8(offset),
+      buffer.readUInt8(offset + 1),
+      buffer.readUInt8(offset + 2),
+      buffer.readUInt8(offset + 3),
+    ];
     offset += 4;
 
+    const suspensionDamage: [number, number, number, number] = [
+      buffer.readUInt8(offset),
+      buffer.readUInt8(offset + 1),
+      buffer.readUInt8(offset + 2),
+      buffer.readUInt8(offset + 3),
+    ];
+    offset += 4;
+
+    const brakeTempCelsius: [number, number, number, number] = [
+      buffer.readInt16LE(offset),
+      buffer.readInt16LE(offset + 2),
+      buffer.readInt16LE(offset + 4),
+      buffer.readInt16LE(offset + 6),
+    ];
     offset += 8;
 
     const tireTreadTemp: [number, number, number, number] = [
@@ -369,44 +388,28 @@ export class CarPhysicsDecoder {
     ];
     offset += 8;
 
-    offset += 8;
-
+    const engineSpeed = buffer.readFloatLE(offset);
     offset += 4;
 
-    const suspensionDamage: [number, number, number, number] = [
-      buffer.readUInt8(offset + 68),
-      buffer.readUInt8(offset + 69),
-      buffer.readUInt8(offset + 70),
-      buffer.readUInt8(offset + 71),
-    ];
-
-    const brakeTempCelsius: [number, number, number, number] = [
-      buffer.readInt16LE(offset + 72),
-      buffer.readInt16LE(offset + 74),
-      buffer.readInt16LE(offset + 76),
-      buffer.readInt16LE(offset + 78),
-    ];
-
-    const brakeDamage: [number, number, number, number] = [
-      buffer.readUInt8(offset + 64),
-      buffer.readUInt8(offset + 65),
-      buffer.readUInt8(offset + 66),
-      buffer.readUInt8(offset + 67),
-    ];
-
-    const engineSpeed = buffer.readFloatLE(offset + 80);
-    const engineTorque = buffer.readFloatLE(offset + 84);
+    const engineTorque = buffer.readFloatLE(offset);
+    offset += 4;
 
     const wings: [number, number] = [
-      buffer.readUInt8(offset + 88),
-      buffer.readUInt8(offset + 89),
+      buffer.readUInt8(offset),
+      buffer.readUInt8(offset + 1),
     ];
+    offset += 2;
 
-    const handbrake = buffer.readUInt8(offset + 90);
-    const aeroDamage = buffer.readUInt8(offset + 91);
-    const engineDamage = buffer.readUInt8(offset + 92);
+    const handbrake = buffer.readUInt8(offset);
+    offset += 1;
 
-    offset += 93;
+    const aeroDamage = buffer.readUInt8(offset);
+    offset += 1;
+
+    const engineDamage = buffer.readUInt8(offset);
+    offset += 1;
+
+    offset += 3;
 
     const joyPad0 = buffer.readUInt32LE(offset);
     offset += 4;
@@ -433,11 +436,6 @@ export class CarPhysicsDecoder {
     offset += 12;
 
     const brakeBias = buffer.readUInt8(offset);
-    offset += 1;
-
-    offset += 3;
-
-    const tickCount = buffer.readUInt32LE(offset);
 
     return {
       viewedParticipantIndex,
@@ -472,7 +470,6 @@ export class CarPhysicsDecoder {
       localAcceleration,
       worldAcceleration,
       extentsCenter,
-      fullPosition,
       tireFlags,
       terrain,
       tireY,
@@ -480,6 +477,9 @@ export class CarPhysicsDecoder {
       tireTemp,
       tireHeightAboveGround,
       tireWear,
+      brakeDamage,
+      suspensionDamage,
+      brakeTempCelsius,
       tireTreadTemp,
       tireLayerTemp,
       tireCarcassTemp,
@@ -494,9 +494,6 @@ export class CarPhysicsDecoder {
       suspensionVelocity,
       suspensionRideHeight,
       airPressure,
-      suspensionDamage,
-      brakeTempCelsius,
-      brakeDamage,
       engineSpeed,
       engineTorque,
       wings,
@@ -507,8 +504,8 @@ export class CarPhysicsDecoder {
       dPad,
       tireCompound,
       turboBoostPressure,
+      fullPosition,
       brakeBias,
-      tickCount,
     };
   }
 
