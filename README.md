@@ -19,7 +19,7 @@ A TypeScript client library for receiving and decoding UDP telemetry data from A
 | `TIMINGS` | Lap times, sector times, race positions | ✅ |
 | `GAME_STATE` | Session state, weather conditions, temperatures | ✅ |
 | `PARTICIPANT_VEHICLE_NAMES` | Vehicle information and names | ✅ |
-| `TIME_STATS` | Detailed timing statistics | ❌ |
+| `TIME_STATS` | Detailed timing statistics | ✅ |
 | `WEATHER_STATE` | Weather data | ❌ (included in GAME_STATE) |
 | `VEHICLE_NAMES` | Vehicle names | ❌ (not sent by AMS2) |
 
@@ -51,6 +51,9 @@ client.onPacket(PacketType.TIMINGS, (data, header) => {
 
 // Start the client
 client.start();
+
+// Stop the client when done
+// client.stop();
 ```
 
 ## API Reference
@@ -62,6 +65,7 @@ client.start();
 - `start()` - Start listening for UDP packets on port 5606
 - `stop()` - Stop the UDP client
 - `onPacket<T>(packetType: T, callback)` - Register event listener for specific packet type
+- `onUnknownPacket(callback)` - Register event listener for unknown packet types
 
 #### Event Callbacks
 
@@ -123,13 +127,13 @@ Vehicle information:
 1. Launch Automobilista 2
 2. Go to Options → System
 3. Enable "UDP Frequency" and set to desired rate (4-6 recommended)
-4. Set Protocol Version to roject CARS 2
+4. Set Protocol Version to Project CARS 2
 
 
 ## Data Formats
 
 ### Tire Arrays
-Tire data is provided as 4-element arrays representing [Front Left, Front Right, Rear Left, Rear Right]:
+Tire data is provided as 4-element arrays representing [Front Left, Front Right, Rear Left, Rear Right].
 
 ## Development
 
